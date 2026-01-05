@@ -130,48 +130,12 @@ gemini
 Select authentication method:
 - Google account
 - Gemini API key
-- Vertex AI
 
 **Codex:**
 ```bash
 codex
 ```
 Sign in with ChatGPT account (Plus, Pro, Enterprise) or OpenAI API key.
-
-## Using the Tools
-
-### Claude Code
-```bash
-cd ~/my-project
-claude
-
-# Example tasks:
-> Fix the authentication bug in login.py
-> Add error handling to the database module
-> Write tests for the user registration function
-```
-
-### Gemini CLI
-```bash
-cd ~/my-project
-gemini
-
-# Example tasks:
-> Review this code for security issues
-> Generate documentation for this project
-> Search for Python async best practices
-```
-
-### Codex
-```bash
-cd ~/my-project
-codex
-
-# Example tasks:
-> Refactor this function for better performance
-> Add docstrings to all functions
-> Debug why the tests are failing
-```
 
 ## Troubleshooting
 
