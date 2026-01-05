@@ -1,0 +1,97 @@
+services:
+  valkey:
+    image: valkey/valkey:8-alpine
+    container_name: llm-chat-valkey
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    networks:
+      - llm-chat-network
+    volumes:
+      - valkey-data:/data
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: llm-chat-searxng
+    restart: unless-stopped
+    depends_on:
+      - valkey
+    networks:
+      - llm-chat-network
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://localhost:8080}
+      - UWSGI_WORKERS=${UWSGI_WORKERS:-4}
+      - UWSGI_THREADS=${UWSGI_THREADS:-4}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: llm-chat-ollama
+    restart: unless-stopped
+    networks:
+      - llm-chat-network
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=${OLLAMA_ORIGINS:-*}
+      - OLLAMA_HOST=${OLLAMA_HOST:-0.0.0.0}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+  lobe-chat:
+    image: lobehub/lobe-chat:latest
+    container_name: llm-chat-lobe
+    restart: unless-stopped
+    ports:
+      - "3210:3210"
+    depends_on:
+      - ollama
+      - searxng
+    networks:
+      - llm-chat-network
+    environment:
+      - OLLAMA_PROXY_URL=${OLLAMA_PROXY_URL:-http://ollama:11434}
+      - SEARCH_PROVIDERS=${SEARCH_PROVIDERS:-searxng}
+      - SEARXNG_URL=${SEARXNG_URL:-http://searxng:8080}
+      # Optional: Uncomment in .env file to enable password protection
+      - ACCESS_CODE=${ACCESS_CODE}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  llm-chat-network:
+    driver: bridge
+
+volumes:
+  ollama-data:
+    driver: local
+  valkey-data:
+    driver: local

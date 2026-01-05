@@ -1,0 +1,28 @@
+# SearXNG Configuration for the llm-chat stack
+# This file enables JSON API output and configures Redis caching
+
+use_default_settings: true
+
+server:
+  # Disable rate limiting for local API access
+  limiter: false
+  
+  # Allow connections from Docker network
+  bind_address: "0.0.0.0"
+  port: 8080
+  
+  # Secret key for security
+  # IMPORTANT: Generate your own with: openssl rand -hex 32
+  # Or leave as-is and SearXNG will auto-generate on first run
+  secret_key: "ultrasecretkey"
+
+search:
+  # Enable multiple output formats
+  # JSON is required for Lobe Chat integration
+  formats:
+    - html
+    - json
+
+redis:
+  # Connect to Valkey (Redis-compatible) for caching
+  url: redis://valkey:6379/0

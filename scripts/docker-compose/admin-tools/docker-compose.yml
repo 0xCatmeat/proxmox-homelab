@@ -1,0 +1,122 @@
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: admin-tools-watchtower
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=${TZ:-UTC}
+      - WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL:-86400}
+      - WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP:-true}
+      - WATCHTOWER_MONITOR_ONLY=${WATCHTOWER_MONITOR_ONLY:-true}
+      - WATCHTOWER_INCLUDE_STOPPED=${WATCHTOWER_INCLUDE_STOPPED:-false}
+    networks:
+      - admin-tools-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "2"
+
+  dockge:
+    image: louislam/dockge:1
+    container_name: admin-tools-dockge
+    restart: unless-stopped
+    ports:
+      - "${DOCKGE_PORT:-5001}:5001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dockge-data:/app/data
+      - "${DOCKGE_STACKS_DIR:-/opt/stacks}:${DOCKGE_STACKS_DIR:-/opt/stacks}"
+    environment:
+      - TZ=${TZ:-UTC}
+      - DOCKGE_STACKS_DIR=${DOCKGE_STACKS_DIR:-/opt/stacks}
+    networks:
+      - admin-tools-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "2"
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: admin-tools-vaultwarden
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "${VAULTWARDEN_PORT:-8000}:80"
+    volumes:
+      - vaultwarden-data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - DOMAIN=${VAULTWARDEN_DOMAIN:-}
+      - SIGNUPS_ALLOWED=${VAULTWARDEN_SIGNUPS_ALLOWED:-true}
+      - INVITATIONS_ALLOWED=${VAULTWARDEN_INVITATIONS_ALLOWED:-false}
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN:-}  # Admin panel is disabled unless VAULTWARDEN_ADMIN_TOKEN is set in .env. Safe to leave empty.
+      - WEBSOCKET_ENABLED=${VAULTWARDEN_WEBSOCKET_ENABLED:-true}
+    networks:
+      - admin-tools-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "2"
+
+  it-tools:
+    image: corentinth/it-tools:latest
+    container_name: admin-tools-ittools
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "${ITTOOLS_PORT:-8080}:80"
+    environment:
+      - TZ=${TZ:-UTC}
+    networks:
+      - admin-tools-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "2"
+
+  stirling-pdf:
+    image: frooodle/s-pdf:latest
+    container_name: admin-tools-stirlingpdf
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "${STIRLINGPDF_PORT:-8082}:8080"
+    volumes:
+      - stirlingpdf-configs:/configs
+    environment:
+      - TZ=${TZ:-UTC}
+      - DOCKER_ENABLE_SECURITY=${STIRLINGPDF_SECURITY:-false}
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=${STIRLINGPDF_ADVANCED_OPS:-false}
+    networks:
+      - admin-tools-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "2"
+
+networks:
+  admin-tools-network:
+    driver: bridge
+
+volumes:
+  dockge-data:
+    driver: local
+  vaultwarden-data:
+    driver: local
+  stirlingpdf-data:
+    driver: local
+  stirlingpdf-configs:
+    driver: local

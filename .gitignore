@@ -1,0 +1,82 @@
+# Logs
+*.log
+*.log.*
+
+# Backups
+*.backup
+*.bak
+*.orig
+*.original
+*~
+
+# Temp files
+*.tmp
+*.temp
+.*.swp
+.*.swo
+
+# OS junk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Environment files (often contain secrets)
+.env
+.env.*
+!.env.example
+
+# Common private key and certificate files
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Optional: local secrets folder (if you use one)
+secrets/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Local config overrides (keep these narrow)
+config.local.*
+*.local.json
+*.local.yml
+*.local.yaml
+*.local.toml
+
+# Tests and caches
+test/
+tests/
+__pycache__/
+*.pyc
+
+# Python packaging/build outputs
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+
+# Node (only matters if you use Node tooling)
+node_modules/
+
+# Obsidian (optional, if this repo includes notes)
+.obsidian/
+
+# Optional: if you generate archives locally, prefer ignoring a folder
+# artifacts/
+# releases/
