@@ -6,7 +6,7 @@ Setup scripts and documentation for a Proxmox-based homelab environment. This re
 
 ## Overview
 
-This project is designed to provide a clean, opinionated baseline for:
+This project is designed to provide a clean baseline for:
 
 - Proxmox VE hosts
 - Debian and Ubuntu virtual machines
