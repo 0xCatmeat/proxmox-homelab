@@ -2,8 +2,6 @@
 
 Setup scripts and documentation for a Proxmox-based homelab environment. This repository contains automated, auditable setup scripts and detailed documentation for building a secure, repeatable, and production-style homelab.
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-
 ## Overview
 
 This project is designed to provide a clean baseline for:
